@@ -1,0 +1,7 @@
+Better Comments
+Bracket Pair Colorizer
+ESLint
+Git History
+Import Cost
+One Dark Pro
+Prettier

@@ -1,0 +1,29 @@
+{
+  "workbench.colorTheme": "One Dark Pro",
+  "git.confirmSync": false,
+  "window.zoomLevel": -1,
+  "prettier.singleQuote": true,
+  "git.autofetch": true,
+  "editor.tabSize": 2,
+  "editor.renderIndentGuides": false,
+  "editor.formatOnSave": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.alwaysShowStatus": false,
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  // Toms edits
+  // "[php]": {
+  //   "editor.formatOnSave": true
+  // },
+  "editor.dragAndDrop": false,
+  "editor.minimap.enabled": false,
+  // "workbench.startupEditor": "welcomePage",
+  "importCost.smallPackageColor": "rgba(124, 195, 110, 0.5)",
+  "importCost.mediumPackageColor": "rgba(255, 98, 0, 0.5)",
+  "importCost.largePackageColor": "rgba(224, 41, 22, 0.6)",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 14
+}
