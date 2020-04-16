@@ -11,6 +11,7 @@ export PATH=$PATH=/Users/thomaslarge/.npm-global
 export PATH="$HOME/.composer/vendor/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export PATH="/usr/local/share/npm/bin:$PATH"
+export PATH="/usr/local/bin/composer/bin::$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/thomaslarge/.oh-my-zsh"
@@ -75,13 +76,11 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git react-native wp-cli react-native-git-upgrade)
+plugins=(git react-native wp-cli encode64)
 
 
 source $ZSH/oh-my-zsh.sh
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /Users/thomaslarge/.oh-my-zsh/custom/plugins/powerlevel10k/powerlevel9k.zsh-theme
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -119,11 +118,69 @@ alias devices="xcrun simctl list devices"
 alias apps="cd ~/Documents/apps"
 alias mamp="cd /Applications/MAMP/htdocs"
 
-# Hosts
-alias host="sudo nano /etc/hosts"
-
 # sequelize
 alias sequelize-fresh="sequelize db:migrate && sequelize db:seed:all"
 
 #VS
 alias vs="code ."
+
+#K8s
+alias k="kubectl"
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+source /Users/thomaslarge/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+
+# tabtab source for packages
+# uninstall by removing these lines
+[[ -f ~/.config/tabtab/__tabtab.zsh ]] && . ~/.config/tabtab/__tabtab.zsh || true
+export PATH="/usr/local/opt/curl/bin:$PATH"
+
+
+
+# Shopify theme stuff 
+function ssl-check() {
+    f=~/.localhost_ssl;
+    ssl_crt=$f/server.crt
+    ssl_key=$f/server.key
+    b=$(tput bold)
+    c=$(tput sgr0)
+
+    local_ip=$(ipconfig getifaddr $(route get default | grep interface | awk '{print $2}'))
+    # local_ip=999.999.999 # (uncomment for testing)
+
+    domains=(
+        "localhost"
+        "$local_ip"
+    )
+
+    if [[ ! -f $ssl_crt ]]; then
+        echo -e "\n🛑  ${b}Couldn't find a Slate SSL certificate:${c}"
+        make_key=true
+    elif [[ ! $(openssl x509 -noout -text -in $ssl_crt | grep $local_ip) ]]; then
+        echo -e "\n🛑  ${b}Your IP Address has changed:${c}"
+        make_key=true
+    else
+        echo -e "\n✅  ${b}Your IP address is still the same.${c}"
+    fi
+
+    if [[ $make_key == true ]]; then
+        echo -e "Generating a new Slate SSL certificate...\n"
+        count=$(( ${#domains[@]} - 1))
+        mkcert ${domains[@]}
+
+        # Create Slate's default certificate directory, if it doesn't exist
+        test ! -d $f && mkdir $f
+
+        # It appears mkcert bases its filenames off the number of domains passed after the first one.
+        # This script predicts that filename, so it can copy it to Slate's default location.
+        if [[ $count = 0 ]]; then
+            mv ./localhost.pem $ssl_crt
+            mv ./localhost-key.pem $ssl_key
+        else
+            mv ./localhost+$count.pem $ssl_crt
+            mv ./localhost+$count-key.pem $ssl_key
+        fi
+    fi
+}
